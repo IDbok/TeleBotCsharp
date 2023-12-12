@@ -26,7 +26,8 @@ namespace TeleBot
             OutputMessage mes = (string somemessage) => GetOutput(somemessage, ref output); //SendOutputMessage(string somemessage, ITelegramBotClient botClient, long chatId, CancellationToken cancellationToken)(somemessage, ref outputMessage);
             DbProcessing.OutputMessageHendler(mes);//; outputMessage = (string somemessage) => Console.WriteLine(somemessage);//;
 
-            string token = ""; // Замените на токен вашего бота
+            string token = Environment.GetEnvironmentVariable("MY_API_TOKEN");
+             // Замените на токен вашего бота
             _botClient = new TelegramBotClient(token);
 
             using (var db = new MyBotDbContext())
