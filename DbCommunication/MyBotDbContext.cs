@@ -6,6 +6,11 @@ namespace TeleBot.DbCommunication
 {
     public class MyBotDbContext : DbContext
     {
+        public static void SetDbPasswod(string password)
+        {
+            DbPass = password;
+        }
+        private static string DbPass;
         public DbSet<User> Users { get; set; } = null!;
         public DbSet<TextMessage> Messages { get; set; } = null!;
 
@@ -22,7 +27,7 @@ namespace TeleBot.DbCommunication
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseMySql("server=localhost;user=root;password=root;database=telebot_db_v3;",
+            optionsBuilder.UseMySql($"server=localhost;user=root;password={DbPass};database=telebot_db_v3;",
                 new MySqlServerVersion(new Version(5,7,24)));
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)

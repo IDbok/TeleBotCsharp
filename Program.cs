@@ -1,11 +1,5 @@
-﻿using System;
-using System.Runtime.Intrinsics.Arm;
-using System.Threading;
-using TeleBot.DbCommunication;
-using TeleBot.DbCommunication.MySqlConnector;
-using TeleBot.Models;
+﻿using TeleBot.DbCommunication;
 using Telegram.Bot;
-using Telegram.Bot.Args;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
@@ -19,14 +13,17 @@ namespace TeleBot
         private static List<string> output = new();
         static ITelegramBotClient _botClient;
 
+
         static async Task Main() //static void Main(string[] args)
         {
-            Console.WriteLine("Hello, World!");
+            //Console.WriteLine("Hello, World!");
+            // export MY_API_TOKEN=ваш_токен
+            TeleBot.DbCommunication.MyBotDbContext.SetDbPasswod (Environment.GetEnvironmentVariable("DB_PASS"));
 
             OutputMessage mes = (string somemessage) => GetOutput(somemessage, ref output); //SendOutputMessage(string somemessage, ITelegramBotClient botClient, long chatId, CancellationToken cancellationToken)(somemessage, ref outputMessage);
             DbProcessing.OutputMessageHendler(mes);//; outputMessage = (string somemessage) => Console.WriteLine(somemessage);//;
 
-            string token = Environment.GetEnvironmentVariable("MY_API_TOKEN");
+            string token = Environment.GetEnvironmentVariable("MY_API_TOKEN"); // todo - Получаем токен из переменной окружения, которую указали ранее
              // Замените на токен вашего бота
             _botClient = new TelegramBotClient(token);
 
