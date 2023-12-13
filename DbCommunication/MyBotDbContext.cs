@@ -28,7 +28,11 @@ namespace TeleBot.DbCommunication
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseMySql($"server=localhost;user=root;password={DbPass};database=telebot_db_v3;",
-                new MySqlServerVersion(new Version(5,7,24)));
+                new MySqlServerVersion(new Version(8,0,35)),//8,0,35//5,7,24
+                mySqlOptions =>
+                {
+                    mySqlOptions.EnableRetryOnFailure();
+                });
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
