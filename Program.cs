@@ -16,20 +16,48 @@ namespace TeleBot
 
         static async Task Main() //static void Main(string[] args)
         {
-            //Console.WriteLine("Hello, World!");
-            // export MY_API_TOKEN=ваш_токен
-            TeleBot.DbCommunication.MyBotDbContext.SetDbPasswod (Environment.GetEnvironmentVariable("DB_PASS"));
+            Console.WriteLine("Hello, World!");
+
+            // Укажите имя переменной среды, значение которой вы хотите получить
+            string variableName = "DB_PASS";//"VARIABLE_NAME";// 
+            string variableName2 = "DB_VERSION";
+            // Получите значение переменной среды
+            string variableValue = Environment.GetEnvironmentVariable(variableName);
+            string variableValue2 = Environment.GetEnvironmentVariable(variableName2);
+
+            string token = Environment.GetEnvironmentVariable("MY_API_TOKEN");
+
+            MyBotDbContext.SetDbPasswod(variableValue);
+            MyBotDbContext.SetDbVersion(variableValue2);
+
+            // Проверьте, было ли получено значение
+            if (variableValue != null && variableName2 != null && token != null)
+            {
+                Console.WriteLine($"Значение переменной {variableName}: {variableValue}");
+                Console.WriteLine($"Значение переменной {variableName2}: {variableValue2}");
+                Console.WriteLine($"Токен на месте!");
+            }
+            else
+            {
+                if(token == null) Console.WriteLine($"Токен не найден!");
+                if(variableValue == null) Console.WriteLine($"Переменная {variableName} не найдена!");
+                if(variableValue2 == null) Console.WriteLine($"Переменная {variableName2} не найдена!");
+            }
 
             OutputMessage mes = (string somemessage) => GetOutput(somemessage, ref output); //SendOutputMessage(string somemessage, ITelegramBotClient botClient, long chatId, CancellationToken cancellationToken)(somemessage, ref outputMessage);
             DbProcessing.OutputMessageHendler(mes);//; outputMessage = (string somemessage) => Console.WriteLine(somemessage);//;
+            MyBotDbContext.OutputMessageHendler(ConsoleOutput);
 
-            string token = Environment.GetEnvironmentVariable("MY_API_TOKEN"); // todo - Получаем токен из переменной окружения, которую указали ранее
+             // todo - Получаем токен из переменной окружения, которую указали ранее
              // Замените на токен вашего бота
             _botClient = new TelegramBotClient(token);
 
+            //make sure to db connection is working
             using (var db = new MyBotDbContext())
             {
-                db.Database.EnsureCreated();
+                if (db.Database.EnsureCreated())
+                    ConsoleOutput("Database created");
+                ConsoleOutput("Database exist");
             }
 
             using var cts = new CancellationTokenSource();
@@ -118,6 +146,10 @@ namespace TeleBot
         private static void GetOutput(string somemessage, ref List<string> output) 
         {
             output.Add(somemessage);
+        }
+        private static void ConsoleOutput(string somemessage)
+        {
+            Console.WriteLine(somemessage);
         }
     }
 }
